@@ -1,1 +1,120 @@
-
+#cloud-config
+autoinstall:
+  version: 1
+  identity:
+    hostname: JC  # Nome do host do sistema
+    username: jccsouza  # Nome de usuário do administrador
+    password: $6$pm76DConvQ61YAnD$XaF5DPll6HrBVt/de5x23X3GqXnbnm5TkY2tU2LT8hK5Xgfj3CaE6rfoOnt4UGj6WDr5DYu2BWGoHDicA9arB.  # Senha criptografada para o usuário
+  storage:
+    swap:
+      size: 4G  # Tamanho da partição de swap
+    config:
+      - id: disk-sda  # Identificador da configuração de disco
+        type: disk  # Tipo de configuração (disco)
+        match:
+          ssd: yes  # Critério para identificar o SSD
+        ptable: gpt  # Tipo de tabela de partição (GPT)
+        preserve: false  # Indica se as partições existentes devem ser preservadas (false para sobrescrever)
+        name: ''
+        grub_device: true  # Dispositivo onde o GRUB será instalado
+        new:
+          - type: partition
+            number: 1
+            size: 1G  # Tamanho da partição EFI
+            flag: boot
+            filesystem: vfat
+            mount:
+              path: /boot/efi
+          - type: partition
+            number: 2
+            size: 80G  # Tamanho da partição raiz (ajustado para 80G)
+            filesystem: ext4
+            mount:
+              path: /
+          - type: partition
+            number: 3
+            size: -1  # Tamanho da partição home (restante do espaço disponível)
+            filesystem: ext4
+            mount:
+              path: /home
+  packages:
+    - vim  # Editor de texto Vim
+    - git  # Sistema de controle de versão Git
+    - htop  # Monitor de sistema Htop
+    - curl  # Ferramenta de transferência de dados Curl
+    - wget  # Ferramenta de download Wget
+    - build-essential  # Pacotes essenciais de construção
+    - python3  # Python 3
+    - python3-pip  # Gerenciador de pacotes Python Pip
+    - python3-venv  # Ambientes virtuais Python
+    - docker.io  # Docker
+    - docker-compose  # Docker Compose
+    - nodejs  # Node.js
+    - npm  # Node Package Manager
+    - timeshift  # Timeshift para backups do sistema
+    - google-chrome-stable  # Google Chrome Browser
+    - brave-browser  # Brave Browser
+    - gnome-shell-extension-gsconnect  # GSConnect
+    - podman  # Podman Desktop
+    - gnome-terminal  # GNOME Terminal
+    - flatpak  # Flatpak para gerenciar aplicativos Flatpak
+    - obs-studio  # OBS Studio para gravação e transmissão ao vivo
+    - gnome-boxes  # GNOME Boxes para máquinas virtuais
+    - virtualbox  # VirtualBox para máquinas virtuais
+    - authy  # Authy para autenticação de dois fatores
+    - bitwarden  # Bitwarden para gerenciamento de senhas
+    - tilix  # Emulador de terminal Tilix
+    - flameshot  # Flameshot para capturas de tela
+    - gimp  # GIMP para edição de imagens
+    - kdenlive  # Kdenlive para edição de vídeo
+    - digikam  # Digikam para gerenciamento de fotos
+  user-data:
+    package_upgrade: true
+    runcmd:
+      - echo "Hello from cloud-init!"
+      - apt-get update
+      - apt-get install -y software-properties-common apt-transport-https gnupg
+      - curl -sSL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor -o /usr/share/keyrings/microsoft-archive-keyring.gpg
+      - sh -c 'echo "deb [arch=amd64 signed-by=/usr/share/keyrings/microsoft-archive-keyring.gpg] https://packages.microsoft.com/repos/vscode stable main" > /etc/apt/sources.list.d/vscode.list'
+      - apt-get update
+      - apt-get install -y code  # Visual Studio Code
+      - curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | gpg --dearmor -o /usr/share/keyrings/githubcli-archive-keyring.gpg
+      - sh -c 'echo "deb [arch=amd64 signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" > /etc/apt/sources.list.d/github-cli.list'
+      - apt-get update
+      - apt-get install -y gh  # GitHub CLI
+      - npm install -g npm  # Atualizar npm
+      - npm install -g @vue/cli  # Vue CLI
+      - snap install chromium  # Chromium Browser
+      - snap install vlc  # VLC Media Player
+      - snap install spotify  # Spotify
+      - snap install postman  # Postman API client
+      - snap install devtoolbox  # Dev Toolbox
+      - snap install warehouse  # Warehouse
+      - snap install flatseal  # Flatseal
+      - snap install free-download-manager  # Free Download Manager
+      - snap install localsend  # LocalSend
+      - code --install-extension ms-python.python  # Extensão Python para VSCode
+      - code --install-extension ms-python.vscode-pylance  # Extensão Pylance para VSCode
+      - code --install-extension ms-toolsai.jupyter  # Extensão Jupyter para VSCode
+      - code --install-extension ms-vscode.cpptools  # Extensão C++ para VSCode
+      - code --install-extension esbenp.prettier-vscode  # Extensão Prettier para VSCode
+      - code --install-extension ms-azuretools.vscode-docker  # Extensão Docker para VSCode
+      - code --install-extension visualstudioexptteam.vscodeintellicode  # Extensão IntelliCode para VSCode
+      - code --install-extension ms-vscode-remote.remote-containers  # Extensão Remote Containers para VSCode
+      - curl -fsSL https://get.docker.com -o get-docker.sh  # Script de instalação do Docker
+      - sh get-docker.sh
+      - usermod -aG docker jccsouza1986  # Adicionar usuário ao grupo Docker
+      - apt-get install -y timeshift  # Timeshift para backups do sistema
+      - git config --global user.name "Júlio Souza"  # Configuração global do Git para nome de usuário
+      - git config --global user.email "juliocesar.correiadesouza@gmail.com"  # Configuração global do Git para email
+      - echo 'alias ll="ls -la"' >> /home/jccsouza/.bashrc  # Adicionar alias ll ao bashrc
+      - echo 'alias gs="git status"' >> /home/jccsouza/.bashrc  # Adicionar alias gs ao bashrc
+      - source /home/jccsouza/.bashrc  # Fonte do bashrc
+      - python3 -m venv /home/jccsouza/python-env  # Criar ambiente virtual Python
+      - /home/jccsouza/python-env/bin/pip install numpy pandas matplotlib jupyter  # Instalar pacotes Python
+      - wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+      - apt install -y ./google-chrome-stable_current_amd64.deb  # Instalar Google Chrome
+      - curl -fsSL https://brave-browser-apt-release.s3.brave.com/brave-core.asc | gpg --dearmor -o /usr/share/keyrings/brave-browser-archive-keyring.gpg
+      - echo "deb [signed-by=/usr/share/keyrings/brave-browser-archive-keyring.gpg] https://brave-browser-apt-release.s3.brave.com/ stable main" | tee /etc/apt/sources.list.d/brave-browser-release.list
+      - apt update
+      - apt install -y brave-browser  # Instalar Brave Browser
