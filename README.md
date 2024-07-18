@@ -1,0 +1,2 @@
+# autoinstall-config
+Tentando aprender.
