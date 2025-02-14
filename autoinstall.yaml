@@ -15,7 +15,6 @@ autoinstall:
           ssd: yes  # Critério para identificar o SSD
         ptable: gpt  # Tipo de tabela de partição (GPT)
         preserve: false  # Indica se as partições existentes devem ser preservadas (false para sobrescrever)
-        name: ''
         grub_device: true  # Dispositivo onde o GRUB será instalado
         new:
           - type: partition
